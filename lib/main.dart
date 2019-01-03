@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(
-    MyStatefulWidget()
+    MaterialApp(
+      home: MyStatefulWidget()
+    )
   );
 }
 
@@ -13,30 +15,55 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
-  var myColor = Colors.green;
+  String task = "";
+  List todoItems = List();
 
-  changeColor() {
-    setState(() {
-      myColor = Colors.green;
-    });
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.ltr,
-        child:Container(
-        color: myColor,
-        child: Center(
-          child: RaisedButton(
-            child: Text("Click"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("To-Do List", textDirection: TextDirection.ltr)
+      ),
+      body: Column(
+        children: <Widget> [
+          TextField(
+            decoration: InputDecoration(
+              icon: Icon(Icons.note)
+            ),
+            onChanged: (input) {
+              print("input");
+              task = input;
+            }
+          ),
+          RaisedButton(
+            child: Text("Add Task"),
             onPressed: () {
-              print("clicked");
-              changeColor();
+              setState(() {
+                todoItems.add(task);
+                task = "";                
+              });
             },
+          ),
+          Flexible(
+            child: ListView.builder(
+              itemCount: todoItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Dismissible(
+                  key: Key(index.toString()),
+                  child: ListTile(
+                    title: Text(todoItems[index])
+                  )
+                );
+              }
+            )
           )
-        )
-      )
+        ]
+      ),
     );
   }
 }
